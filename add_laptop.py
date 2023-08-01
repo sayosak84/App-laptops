@@ -22,52 +22,70 @@ def excel():
 	sheet.column_dimensions['E'].width = 20
 	sheet.column_dimensions['F'].width = 40
 	sheet.column_dimensions['G'].width = 50
+	sheet.column_dimensions['H'].width = 50
+	sheet.column_dimensions['I'].width = 50
+	sheet.column_dimensions['J'].width = 50
+	sheet.column_dimensions['K'].width = 50
 
 	# write given data to an excel spreadsheet
 	# at particular location
-	sheet.cell(row=1, column=1).value = "Name"
-	sheet.cell(row=1, column=2).value = "Course"
-	sheet.cell(row=1, column=3).value = "Semester"
+	sheet.cell(row=1, column=1).value = "Nom de l'appareil"
+	sheet.cell(row=1, column=2).value = "Marque"
+	sheet.cell(row=1, column=3).value = "Date de l'achat"
 	sheet.cell(row=1, column=4).value = "Form Number"
 	sheet.cell(row=1, column=5).value = "Contact Number"
 	sheet.cell(row=1, column=6).value = "Email id"
-	sheet.cell(row=1, column=7).value = "Address"
+	sheet.cell(row=1, column=7).value = "Amortissement mensuel"
+	sheet.cell(row=1, column=8).value = "Dotation aux amortissements"
+	sheet.cell(row=1, column=9).value = "Valeure compatable nette"
+	sheet.cell(row=1, column=10).value = "Utilisateur"
+	sheet.cell(row=1, column=11).value = "Date affectation"
 
 
 # Function to set focus (cursor)
 def focus1(event):
-	# set focus on the course_field box
-	course_field.focus_set()
+	# set focus on the marque_field box
+	marque_field.focus_set()
 
 
 # Function to set focus
 def focus2(event):
-	# set focus on the sem_field box
-	sem_field.focus_set()
+	# set focus on the date_achat_field box
+	date_achat_field.focus_set()
 
 
 # Function to set focus
 def focus3(event):
-	# set focus on the form_no_field box
-	form_no_field.focus_set()
+	# set focus on the date_exp_field box
+	date_exp_field.focus_set()
 
 
 # Function to set focus
 def focus4(event):
-	# set focus on the contact_no_field box
-	contact_no_field.focus_set()
+	# set focus on the prix_achat_field box
+	prix_achat_field.focus_set()
 
 
 # Function to set focus
 def focus5(event):
-	# set focus on the email_id_field box
-	email_id_field.focus_set()
+	# set focus on the date_compta_field box
+	date_compta_field.focus_set()
 
 
 # Function to set focus
 def focus6(event):
-	# set focus on the address_field box
-	address_field.focus_set()
+	# set focus on the ammort_mensuel_field box
+	ammort_mensuel_field.focus_set()
+
+# Function to set focus
+def focus7(event):
+	# set focus on the utilisateur_field box
+	utilisateur_field.focus_set()
+
+# Function to set focus
+def focus8(event):
+	# set focus on the date_affect_field box
+	date_affect_field.focus_set()
 
 
 # Function for clearing the
@@ -75,13 +93,15 @@ def focus6(event):
 def clear():
 	
 	# clear the content of text entry box
-	name_field.delete(0, END)
-	course_field.delete(0, END)
-	sem_field.delete(0, END)
-	form_no_field.delete(0, END)
-	contact_no_field.delete(0, END)
-	email_id_field.delete(0, END)
-	address_field.delete(0, END)
+	nom_appareil_field.delete(0, END)
+	marque_field.delete(0, END)
+	date_achat_field.delete(0, END)
+	date_exp_field.delete(0, END)
+	prix_achat_field.delete(0, END)
+	date_compta_field.delete(0, END)
+	ammort_mensuel_field.delete(0, END)
+	utilisateur_field.delete(0, END)
+	date_affect_field.delete(0, END)
 
 
 # Function to take data from GUI
@@ -90,13 +110,15 @@ def insert():
 	
 	# if user not fill any entry
 	# then print "empty input"
-	if (name_field.get() == "" and
-		course_field.get() == "" and
-		sem_field.get() == "" and
-		form_no_field.get() == "" and
-		contact_no_field.get() == "" and
-		email_id_field.get() == "" and
-		address_field.get() == ""):
+	if (nom_appareil_field.get() == "" and
+		marque_field.get() == "" and
+		date_achat_field.get() == "" and
+		date_exp_field.get() == "" and
+		prix_achat_field.get() == "" and
+		date_compta_field.get() == "" and
+		ammort_mensuel_field.get() == "" and
+		utilisateur_field.get() == "" and
+		date_affect_field.get() == ""):
 			
 		print("empty input")
 
@@ -111,19 +133,21 @@ def insert():
 		# get method returns current text
 		# as string which we write into
 		# excel spreadsheet at particular location
-		sheet.cell(row=current_row + 1, column=1).value = name_field.get()
-		sheet.cell(row=current_row + 1, column=2).value = course_field.get()
-		sheet.cell(row=current_row + 1, column=3).value = sem_field.get()
-		sheet.cell(row=current_row + 1, column=4).value = form_no_field.get()
-		sheet.cell(row=current_row + 1, column=5).value = contact_no_field.get()
-		sheet.cell(row=current_row + 1, column=6).value = email_id_field.get()
-		sheet.cell(row=current_row + 1, column=7).value = address_field.get()
+		sheet.cell(row=current_row + 1, column=1).value = nom_appareil_field.get()
+		sheet.cell(row=current_row + 1, column=2).value = marque_field.get()
+		sheet.cell(row=current_row + 1, column=3).value = date_achat_field.get()
+		sheet.cell(row=current_row + 1, column=4).value = date_exp_field.get()
+		sheet.cell(row=current_row + 1, column=5).value = prix_achat_field.get()
+		sheet.cell(row=current_row + 1, column=6).value = date_compta_field.get()
+		sheet.cell(row=current_row + 1, column=7).value = ammort_mensuel_field.get()
+		sheet.cell(row=current_row + 1, column=10).value = utilisateur_field.get()
+		sheet.cell(row=current_row + 1, column=11).value = date_affect_field.get()
 
 		# save the file
 		wb.save('C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\excel.xlsx')
 
-		# set focus on the name_field box
-		name_field.focus_set()
+		# set focus on the nom_appareil_field box
+		nom_appareil_field.focus_set()
 
 		# call the clear() function
 		clear()
@@ -149,86 +173,103 @@ if __name__ == "__main__":
 	# create a Form label
 	heading = Label(root, text="Form", bg="light green")
 
-	# create a Name label
-	name = Label(root, text="Name", bg="light green")
+	# create a nom_appareil label
+	nom_appareil = Label(root, text="Nom de l'appareil", bg="light green")
 
-	# create a Course label
-	course = Label(root, text="Course", bg="light green")
+	# create a marque label
+	marque = Label(root, text="Marque", bg="light green")
 
-	# create a Semester label
-	sem = Label(root, text="Semester", bg="light green")
+	# create a Date de l'achat label
+	date_achat = Label(root, text="Date de l'achat", bg="light green")
 
-	# create a Form No. label
-	form_no = Label(root, text="Form No.", bg="light green")
+	# create a date_exp label
+	date_exp = Label(root, text="Date d'expiration", bg="light green")
 
-	# create a Contact No. label
-	contact_no = Label(root, text="Contact No.", bg="light green")
+	# create a prix_achat label
+	prix_achat = Label(root, text="Prix d'achat", bg="light green")
 
 	# create a Email id label
-	email_id = Label(root, text="Email id", bg="light green")
+	date_compta = Label(root, text="Date comptabilisation", bg="light green")
 
-	# create a address label
-	address = Label(root, text="Address", bg="light green")
+	# create a ammort_mensuel label
+	ammort_mensuel = Label(root, text="Ammortissement mensuel", bg="light green")
+
+	# create a utilisateur label
+	utilisateur = Label(root, text="Utilisateur", bg="light green")
+
+	# create a date affectation label
+	date_affect = Label(root, text="Date affectation", bg="light green")
 
 	# grid method is used for placing
 	# the widgets at respective positions
 	# in table like structure .
 	heading.grid(row=0, column=1)
-	name.grid(row=1, column=0)
-	course.grid(row=2, column=0)
-	sem.grid(row=3, column=0)
-	form_no.grid(row=4, column=0)
-	contact_no.grid(row=5, column=0)
-	email_id.grid(row=6, column=0)
-	address.grid(row=7, column=0)
+	nom_appareil.grid(row=1, column=0)
+	marque.grid(row=2, column=0)
+	date_achat.grid(row=3, column=0)
+	date_exp.grid(row=4, column=0)
+	prix_achat.grid(row=5, column=0)
+	date_compta.grid(row=6, column=0)
+	ammort_mensuel.grid(row=7, column=0)
+	utilisateur.grid(row=8, column=0)
+	date_affect.grid(row=9, column=0)
 
 	# create a text entry box
 	# for typing the information
-	name_field = Entry(root)
-	course_field = Entry(root)
-	sem_field = Entry(root)
-	form_no_field = Entry(root)
-	contact_no_field = Entry(root)
-	email_id_field = Entry(root)
-	address_field = Entry(root)
+	nom_appareil_field = Entry(root)
+	marque_field = Entry(root)
+	date_achat_field = Entry(root)
+	date_exp_field = Entry(root)
+	prix_achat_field = Entry(root)
+	date_compta_field = Entry(root)
+	ammort_mensuel_field = Entry(root)
+	utilisateur_field = Entry(root)
+	date_affect_field = Entry(root)
 
 	# bind method of widget is used for
 	# the binding the function with the events
 
 	# whenever the enter key is pressed
 	# then call the focus1 function
-	name_field.bind("<Return>", focus1)
+	nom_appareil_field.bind("<Return>", focus1)
 
 	# whenever the enter key is pressed
 	# then call the focus2 function
-	course_field.bind("<Return>", focus2)
+	marque_field.bind("<Return>", focus2)
 
 	# whenever the enter key is pressed
 	# then call the focus3 function
-	sem_field.bind("<Return>", focus3)
+	date_achat_field.bind("<Return>", focus3)
 
 	# whenever the enter key is pressed
 	# then call the focus4 function
-	form_no_field.bind("<Return>", focus4)
+	date_exp_field.bind("<Return>", focus4)
 
 	# whenever the enter key is pressed
 	# then call the focus5 function
-	contact_no_field.bind("<Return>", focus5)
+	prix_achat_field.bind("<Return>", focus5)
 
 	# whenever the enter key is pressed
 	# then call the focus6 function
-	email_id_field.bind("<Return>", focus6)
+	date_compta_field.bind("<Return>", focus6)
+
+	utilisateur_field.bind("<Return>", focus7)
+
+	date_affect_field.bind("<Return>", focus8)
+
 
 	# grid method is used for placing
 	# the widgets at respective positions
 	# in table like structure .
-	name_field.grid(row=1, column=1, ipadx="100")
-	course_field.grid(row=2, column=1, ipadx="100")
-	sem_field.grid(row=3, column=1, ipadx="100")
-	form_no_field.grid(row=4, column=1, ipadx="100")
-	contact_no_field.grid(row=5, column=1, ipadx="100")
-	email_id_field.grid(row=6, column=1, ipadx="100")
-	address_field.grid(row=7, column=1, ipadx="100")
+	nom_appareil_field.grid(row=1, column=1, ipadx="100")
+	marque_field.grid(row=2, column=1, ipadx="100")
+	date_achat_field.grid(row=3, column=1, ipadx="100")
+	date_exp_field.grid(row=4, column=1, ipadx="100")
+	prix_achat_field.grid(row=5, column=1, ipadx="100")
+	date_compta_field.grid(row=6, column=1, ipadx="100")
+	ammort_mensuel_field.grid(row=7, column=1, ipadx="100")
+	utilisateur_field.grid(row=8, column=1, ipadx="100")
+	date_affect_field.grid(row=9, column=1, ipadx="100")
 
 	# call excel function
 	excel()
@@ -236,7 +277,7 @@ if __name__ == "__main__":
 	# create a Submit Button and place into the root window
 	submit = Button(root, text="Submit", fg="Black",
 							bg="Red", command=insert)
-	submit.grid(row=8, column=1)
+	submit.grid(row=10, column=1)
 
 	# start the GUI
 	root.mainloop()
