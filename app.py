@@ -6,12 +6,13 @@ from PIL import Image, ImageTk
 import sqlite3
 import os
 
-IMAGE_PATH_FIRST = 'C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\first-page.jpg'
-IMAGE_PATH_OTHERS = 'C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\other-pages.jpg'
+IMAGE_PATH_FIRST = "assets/first-page.jpg"
+IMAGE_PATH_OTHERS = "assets/other-pages.jpg"
 BUTTON_FONT = None
 WIDTH = 1200
 HEIGTH = 800
 LARGEFONT =("Verdana", 35)
+MIDFONT =("Verdana", 25)
 
 
 def resource_path(relative_path):
@@ -72,12 +73,12 @@ class tkinterApp(tk.Tk):
   
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (Acceuil, Ajouter, Rechercher_laptop):
+        for F in (Acceuil, Ajouter, Rechercher_laptop_nom_app, Rechercher_laptop_user):
   
             frame = F(container, self)
   
             # initializing frame of that object from
-            # startpage, Ajouter, Rechercher_laptop respectively with
+            # startpage, Ajouter, Rechercher_laptop_nom_app respectively with
             # for loop
             self.frames[F] = frame
   
@@ -137,7 +138,7 @@ class Ajouter(tk.Frame):
                 elements.append(date_exp_field.get())
                 elements.append(prix_achat_field.get())
                 elements.append(date_compta_field.get())
-                elements.append(ammort_mensuel_field.get())
+                elements.append((prix_achat_field.get()*0.30)/12)
                 elements.append("test")
                 elements.append("test")
                 elements.append(utilisateur_field.get())
@@ -205,7 +206,7 @@ class Ajouter(tk.Frame):
 
         tk.Frame.__init__(self, parent)
 
-        bkrgframe = BkgrFrame(self, IMAGE_PATH_OTHERS, WIDTH, HEIGTH)
+        bkrgframe = BkgrFrame(self, resource_path(IMAGE_PATH_OTHERS), WIDTH, HEIGTH)
         bkrgframe.pack()
 
         Titre = bkrgframe.add(Label(self, text ="Gestion des laptops", bg="#DEC6FA", font = LARGEFONT)
@@ -318,7 +319,7 @@ class Acceuil(tk.Frame):
 
         # button to show frame 2 with text
         # layout2
-        bkrgframe = BkgrFrame(self, IMAGE_PATH_FIRST, WIDTH, HEIGTH)
+        bkrgframe = BkgrFrame(self, resource_path(IMAGE_PATH_FIRST), WIDTH, HEIGTH)
         bkrgframe.pack()
         
 
@@ -335,7 +336,7 @@ class Acceuil(tk.Frame):
 
         button1 = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher par nom d'appareil",
-                            command = lambda : controller.show_frame(Rechercher_laptop),
+                            command = lambda : controller.show_frame(Rechercher_laptop_nom_app),
                             bg='#45b592',
                             fg='#ffffff',
                             bd=0,
@@ -344,8 +345,19 @@ class Acceuil(tk.Frame):
                             width=30
                             ), 500, 450)
 
-# second window frame Rechercher_laptop
-class Rechercher_laptop(tk.Frame):
+        button1 = bkrgframe.add(tk.Button(self, 
+                            text ="Rechercher par utilisateur",
+                            command = lambda : controller.show_frame(Rechercher_laptop_user),
+                            bg='#45b592',
+                            fg='#ffffff',
+                            bd=0,
+                            font=BUTTON_FONT,
+                            height=2,
+                            width=30
+                            ), 500, 500)
+
+# second window frame Rechercher_laptop_nom_app
+class Rechercher_laptop_nom_app(tk.Frame):
      
     def __init__(self, parent, controller):
         
@@ -386,15 +398,141 @@ class Rechercher_laptop(tk.Frame):
 
         tk.Frame.__init__(self, parent)
 
-        bkrgframe = BkgrFrame(self, IMAGE_PATH_OTHERS, WIDTH, HEIGTH)
+        bkrgframe = BkgrFrame(self, resource_path(IMAGE_PATH_OTHERS), WIDTH, HEIGTH)
         bkrgframe.pack()
 
-        Titre = bkrgframe.add(Label(self, text ="Rechercher un laptop", bg="#DEC6FA", font = LARGEFONT)
+        Titre = bkrgframe.add(Label(self, text ="Rechercher un laptop par nom d'appareil", bg="#DEC6FA", font = MIDFONT)
                             , 300, 100)
         
         # recherche section
 
         nom_appareil_recherche = bkrgframe.add(Label(self, text="Tapez le nom de l'appareil :", bg="#DEC6FA")
+                            , 300, 200)
+
+        nom_appareil_recherche_field = bkrgframe.add(Entry(self), 500, 200)
+
+        Recherchebtn = bkrgframe.add(tk.Button(self, 
+                            text ="Rechercher",
+                            command = lambda : recherche(nom_appareil_recherche_field.get()),
+                            bg='#45b592',
+                            fg='#ffffff',
+                            bd=0,
+                            font=BUTTON_FONT,
+                            height=2,
+                            width=15
+                            )
+                            , 700, 190)
+
+
+        # affichage section
+
+        nom_appareil = bkrgframe.add(Label(self, text="Nom de l'appareil", bg="#DEC6FA")
+                            , 300, 280)
+
+        marque = bkrgframe.add(Label(self, text="Marque", bg="#DEC6FA")
+                            , 300, 300)
+
+        date_achat = bkrgframe.add(Label(self, text="Date de l'achat", bg="#DEC6FA")
+                            , 300, 320)
+
+        date_exp = bkrgframe.add(Label(self, text="Date d'expiration", bg="#DEC6FA")
+                            , 300, 340)
+
+        prix_achat = bkrgframe.add(Label(self, text="Prix d'achat", bg="#DEC6FA")
+                            , 300, 360)
+
+        date_compta = bkrgframe.add(Label(self, text="Date comptabilisation", bg="#DEC6FA")
+                            , 300, 380)
+
+        ammort_mensuel = bkrgframe.add(Label(self, text="Ammortissement mensuel", bg="#DEC6FA")
+                            , 300, 400)
+
+        utilisateur = bkrgframe.add(Label(self, text="Utilisateur", bg="#DEC6FA")
+                            , 300, 420)
+
+        date_affect = bkrgframe.add(Label(self, text="Date affectation", bg="#DEC6FA")
+                            , 300, 440)
+
+        
+
+        # create a text entry box
+        # for typing the information
+        nom_appareil_field = bkrgframe.add(Entry(self), 450, 280)
+        marque_field = bkrgframe.add(Entry(self), 450, 300)
+        date_achat_field = bkrgframe.add(Entry(self), 450, 320)
+        date_exp_field = bkrgframe.add(Entry(self), 450, 340)
+        prix_achat_field = bkrgframe.add(Entry(self), 450, 360)
+        date_compta_field = bkrgframe.add(Entry(self), 450, 380)
+        ammort_mensuel_field = bkrgframe.add(Entry(self), 450, 400)
+        utilisateur_field = bkrgframe.add(Entry(self), 450, 420)
+        date_affect_field = bkrgframe.add(Entry(self), 450, 440)
+
+
+        
+
+        Retour = bkrgframe.add(tk.Button(self, 
+                            text ="Retour",
+                            command = lambda : controller.show_frame(Acceuil),
+                            bg='#FFCE5F',
+                            fg='#ffffff',
+                            bd=0,
+                            font=BUTTON_FONT,
+                            height=2,
+                            width=15
+                            )
+                            , 700, 550)
+
+
+class Rechercher_laptop_user(tk.Frame):
+     
+    def __init__(self, parent, controller):
+        
+        def change_text(entry,txt):
+            entry.delete(0,END)
+            entry.insert(0,txt)
+
+        def clear_text(entry):
+            entry.delete(0,END)
+
+        def recherche(name):
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM laptops where Utilisateur=?", (name,))
+            row = cursor.fetchone()
+
+            if row :
+                change_text(nom_appareil_field,row[0])
+                change_text(marque_field,row[1])
+                change_text(date_achat_field,row[2])
+                change_text(date_exp_field,row[3])
+                change_text(prix_achat_field,row[4])
+                change_text(date_compta_field,row[5])
+                change_text(ammort_mensuel_field,row[6])
+                change_text(utilisateur_field,row[7])
+                change_text(date_affect_field,row[8])
+            else :
+                clear_text(nom_appareil_field)
+                clear_text(marque_field)
+                clear_text(date_achat_field)
+                clear_text(date_exp_field)
+                clear_text(prix_achat_field)
+                clear_text(date_compta_field)
+                clear_text(ammort_mensuel_field)
+                clear_text(utilisateur_field)
+                clear_text(date_affect_field)
+
+                
+
+        tk.Frame.__init__(self, parent)
+
+        bkrgframe = BkgrFrame(self, resource_path(IMAGE_PATH_OTHERS), WIDTH, HEIGTH)
+        bkrgframe.pack()
+
+        Titre = bkrgframe.add(Label(self, text ="Rechercher un laptop par utilisateur", bg="#DEC6FA", font = MIDFONT)
+                            , 300, 100)
+        
+        # recherche section
+
+        nom_appareil_recherche = bkrgframe.add(Label(self, text="Tapez le nom de l'utilisateur :", bg="#DEC6FA")
                             , 300, 200)
 
         nom_appareil_recherche_field = bkrgframe.add(Entry(self), 500, 200)

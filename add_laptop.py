@@ -4,6 +4,9 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 import pandas as pd
+import sqlite3
+from sqlite3 import Error
+import os
 
 # opening the existing excel file
 wb = load_workbook('C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\excel.xlsx')
@@ -14,6 +17,21 @@ sheet = wb.active
 LARGEFONT =("Verdana", 35)
 MIDFONT =("Verdana", 22)
 to_search = None
+
+
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+conn = sqlite3.connect(resource_path('test.db'))
 
 class tkinterApp(tk.Tk):
      
@@ -31,6 +49,7 @@ class tkinterApp(tk.Tk):
 
         container.grid_rowconfigure(0, weight = 3)
         container.grid_columnconfigure(0, weight = 3)
+
   
         # initializing frames to an empty array
         self.frames = {} 
@@ -162,6 +181,7 @@ class StartPage(tk.Frame):
         # Function to take data from GUI
         # window and write to an excel file
         def insert():
+            elements = []
             
             # if user not fill any entry
             # then print "empty input"
@@ -198,6 +218,27 @@ class StartPage(tk.Frame):
                 sheet.cell(row=current_row + 1, column=10).value = utilisateur_field.get()
                 sheet.cell(row=current_row + 1, column=11).value = date_affect_field.get()
 
+
+                elements.append(nom_appareil_field.get())
+                elements.append(marque_field.get())
+                elements.append(date_achat_field.get())
+                elements.append(date_exp_field.get())
+                elements.append(prix_achat_field.get())
+                elements.append(date_compta_field.get())
+                elements.append(ammort_mensuel_field.get())
+                elements.append("test")
+                elements.append("test")
+                elements.append(utilisateur_field.get())
+                elements.append(date_affect_field.get())
+                elements.append("test")
+
+                rqst = """INSERT INTO laptops
+                          (Nom_appareil, Marque, Date_achat, Form_Number, Contact_Number, Email_id, Amortissement_mensuel, Dotation_amortissements, Valeure_compatable_nette, Utilisateur, Date_affectation, Date_fin) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+
+                cursor = conn.cursor()
+                cursor.execute(rqst, elements)
+                conn.commit()
                 # save the file
                 wb.save('C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\excel.xlsx')
 
@@ -342,12 +383,31 @@ class Page1(tk.Frame):
     def __init__(self, parent, controller):
          
         tk.Frame.__init__(self, parent)
+
+        logo = tk.PhotoImage(file='C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\bg-section-1.png')
+        BGlabel = tk.Label(self,image=logo)
+        BGlabel.image = logo
+        BGlabel.place(x=0,y=0, anchor = 'nw')
+
+        logo1 = tk.PhotoImage(file='C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\logo-DDM.png')
+        BGlabel1 = tk.Label(self,image=logo1)
+        BGlabel1.image = logo1
+        BGlabel1.place(x=0,y=0, anchor = 'nw')
+
         label = ttk.Label(self, text ="Gestion des laptops", font = LARGEFONT)
         label.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+        
         #label.place(relx=0.5, rely=0.1 , anchor=CENTER)
-  
+
+        #bg_canvas = Canvas(self, width = 700, height=500)
+        #bg = PhotoImage(file='C:\\Users\\Nader\\Documents\\projets_lotfi\\App-laptops\\bg-section-1.png')
+        #bg_canvas.pack(fill="both", expand=True)
+        #bg_canvas.create_image(0,0, image = bg)
+
         # button to show frame 2 with text
         # layout2
+        
         button1 = ttk.Button(self, text ="Ajouter",
                             command = lambda : controller.show_frame(StartPage))
      
@@ -357,13 +417,12 @@ class Page1(tk.Frame):
 
         # button to show frame 2 with text
         # layout2
-        button2 = ttk.Button(self, text ="Page 2",
+        button2 = ttk.Button(self, text ="Rechercher",
                             command = lambda : controller.show_frame(Page2))
      
         # putting the button in its place by
         # using grid
         button2.grid(row = 2, column = 1, padx = 10, pady = 10)
-
 
 # second window frame page1
 class Page2(tk.Frame):
