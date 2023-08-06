@@ -27,7 +27,7 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-conn = sqlite3.connect(resource_path('test.db'))
+conn = sqlite3.connect(resource_path('laptops.db'))
 
 
 
