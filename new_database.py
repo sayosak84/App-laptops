@@ -7,7 +7,8 @@ def create_connection():
     """ create a database connection to a database that resides
         in the memory
     """
-    conn = None;
+    conn = conn.close()
+
     try:
         database = os.path.realpath('test.db')
         conn = sqlite3.connect(database)
@@ -19,5 +20,19 @@ def create_connection():
             conn.close()
 
 
+def drop_table():
+
+    conn = sqlite3.connect('test.db')
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM laptops")
+        conn.commit()
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+
 if __name__ == '__main__':
-    create_connection()
+    #drop_table()
+    #create_connection()

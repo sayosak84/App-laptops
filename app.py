@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 import tkinter.font as font
 from PIL import Image, ImageTk
 import sqlite3
@@ -99,13 +100,18 @@ class Ajouter(tk.Frame):
      
     def __init__(self, parent, controller):
 
-        def check_number(field, entry):
+        def check_number(entry):
             try:
                 float(entry.get())
-                print(field + " number Ok " + entry.get())
                 return True
             except ValueError:
-                print(field + " number Erreur " + entry.get())
+                return False
+
+        def validate(entry):
+            try:
+                datetime.strptime(entry.get(), "%d-%m-%Y")
+                return True
+            except ValueError:
                 return False
 
         def clear():
@@ -123,6 +129,18 @@ class Ajouter(tk.Frame):
             date_fin_field.delete(0, END)
             Message.config(text = "")
 
+        def validate_fields():
+            if (check_number(prix_achat_field) and
+                validate(date_achat_field) and
+                validate(date_exp_field) and
+                validate(date_compta_field) and
+                validate(date_affect_field) and
+                validate(date_fin_field)) :
+
+                return True
+            else : 
+                return False
+
         # Function to take data from GUI
         # window and write to an excel file
         def insert():
@@ -136,14 +154,14 @@ class Ajouter(tk.Frame):
                 date_exp_field.get() == "" and
                 prix_achat_field.get() == "" and
                 date_compta_field.get() == "" and
-                ammort_mensuel_field.get() == "" and
                 utilisateur_field.get() == "" and
-                date_affect_field.get() == ""):
-                    
-                print("empty input")
+                date_affect_field.get() == "" and
+                date_fin_field.get() == ""):
+
+                messagebox.showinfo(title="Alerte", message= "Valeurs vides")
 
             else:
-                if (check_number("prix_achat", prix_achat_field)) :
+                if (validate_fields()) :
                     elements.append(nom_appareil_field.get())
                     elements.append(marque_field.get())
                     elements.append(date_achat_field.get())
@@ -154,11 +172,24 @@ class Ajouter(tk.Frame):
                     elements.append(utilisateur_field.get())
                     elements.append(date_affect_field.get())
                     elements.append(date_fin_field.get())
+                    elements.append(0)
+                    elements.append(0)
 
 
                     rqst = """INSERT INTO laptops
-                            (Nom_appareil, Marque, Date_achat, date_exp, prix_achat, date_compta, Amortissement_mensuel, Utilisateur, Date_affectation, Date_fin) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+                            (Nom_appareil, 
+                            Marque, 
+                            Date_achat, 
+                            Date_exp, 
+                            Prix_achat, 
+                            Date_compta, 
+                            Amortissement_mensuel, 
+                            Utilisateur, 
+                            Date_affectation, 
+                            Date_fin, 
+                            Dot_ammortissement_mensuel,
+                            VCN ) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 
                     cursor = conn.cursor()
                     cursor.execute(rqst, elements)
@@ -168,39 +199,47 @@ class Ajouter(tk.Frame):
                     nom_appareil_field.focus_set()
 
                     # call the clear() function
-                    clear()
+                    #clear()
                 else :
                     Message.config(text = "Prix d'achat invalide")
 
         # Function to set focus (cursor)
         def focus1(event):
-            # set focus on the marque_field box
             marque_field.focus_set()
 
 
         # Function to set focus
         def focus2(event):
-            # set focus on the date_achat_field box
             date_achat_field.focus_set()
 
 
         # Function to set focus
         def focus3(event):
-            # set focus on the date_exp_field box
-            date_exp_field.focus_set()
 
+            if validate(date_achat_field):
+                date_exp_field.focus_set()
+                Message.config(text = "")
+            else: 
+                Message.config(text = "Format date achat incorrecte")
+                date_achat_field.focus_set()
+
+            
 
         # Function to set focus
         def focus4(event):
-            # set focus on the prix_achat_field box
-            prix_achat_field.focus_set()
+            if validate(date_exp_field):
+                prix_achat_field.focus_set()
+                Message.config(text = "")
+            else: 
+                Message.config(text = "Format date d'expiration incorrecte")
+                date_exp_field.focus_set()
 
 
         # Function to set focus
         def focus5(event):
-            # set focus on the date_compta_field box
-            if check_number("prix_achat", prix_achat_field):
+            if check_number(prix_achat_field):
                 date_compta_field.focus_set()
+                Message.config(text = "")
             else: 
                 Message.config(text = "Prix d'achat invalide")
                 prix_achat_field.focus_set()
@@ -208,18 +247,36 @@ class Ajouter(tk.Frame):
 
         # Function to set focus
         def focus6(event):
-            # set focus on the ammort_mensuel_field box
-            utilisateur_field.focus_set()
+            if validate(date_compta_field):
+                utilisateur_field.focus_set()
+                Message.config(text = "")
+            else: 
+                Message.config(text = "Format date d'comptabilisation incorrecte")
+                date_compta_field.focus_set()
+
 
         # Function to set focus
         def focus7(event):
-            # set focus on the utilisateur_field box
             date_affect_field.focus_set()
 
         # Function to set focus
         def focus8(event):
-            # set focus on the date_affect_field box
-            date_fin_field.focus_set()
+            if validate(date_affect_field):
+                date_fin_field.focus_set()
+                Message.config(text = "")
+            else: 
+                Message.config(text = "Format date d'affectation incorrecte")
+                date_affect_field.focus_set()
+
+        # Function to set focus
+        def focus9(event):
+            if validate(date_fin_field):
+                insert()
+                Message.config(text = "")
+            else: 
+                Message.config(text = "Format date de fin incorrecte")
+                date_fin_field.focus_set()
+
 
         tk.Frame.__init__(self, parent)
 
@@ -310,6 +367,8 @@ class Ajouter(tk.Frame):
 
         date_affect_field.bind("<Return>", focus8)
 
+        date_fin_field.bind("<Return>", focus9)
+
         submit = bkrgframe.add(tk.Button(self, 
                             text ="Ajouter",
                             command=insert,
@@ -324,7 +383,7 @@ class Ajouter(tk.Frame):
 
         button1 = bkrgframe.add(tk.Button(self, 
                             text ="Retour",
-                            command = lambda : controller.show_frame(Acceuil),
+                            command = lambda : [clear(), controller.show_frame(Acceuil)] ,
                             bg='#FFCE5F',
                             fg='#ffffff',
                             bd=0,
@@ -339,6 +398,25 @@ class Ajouter(tk.Frame):
 class Acceuil(tk.Frame):
      
     def __init__(self, parent, controller):
+
+        def diff_month(d1, d2):
+            return (d1.year - d2.year) * 12 + d1.month - d2.month
+
+        def get_dot_ammort_mensuel(date_achat, ammort_mesnuel):
+            val_ammort_mesnuel = float(ammort_mesnuel)
+            nb_months = diff_month(datetime.now(), datetime.strptime(date_achat, "%d-%m-%Y"))
+            return nb_months*val_ammort_mesnuel
+
+        def update_rows():
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM laptops")
+            rows = cursor.fetchall()
+            for row in rows :  
+                val_dot_ammort_mensuel = get_dot_ammort_mensuel(row[2], row[6])
+                val_vcn = float(row[4])-val_dot_ammort_mensuel
+                cursor.execute("UPDATE laptops SET dot_ammortissement_mensuel=?, VCN=? WHERE Nom_appareil=? ", (val_dot_ammort_mensuel, val_vcn, row[0]))
+                conn.commit()
+
          
         tk.Frame.__init__(self, parent)
 
@@ -359,7 +437,7 @@ class Acceuil(tk.Frame):
                             width=15
                             ), 550, 400)
 
-        button1 = bkrgframe.add(tk.Button(self, 
+        button2 = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher par nom d'appareil",
                             command = lambda : controller.show_frame(Rechercher_laptop_nom_app),
                             bg='#45b592',
@@ -370,7 +448,7 @@ class Acceuil(tk.Frame):
                             width=30
                             ), 500, 450)
 
-        button1 = bkrgframe.add(tk.Button(self, 
+        button3 = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher par utilisateur",
                             command = lambda : controller.show_frame(Rechercher_laptop_user),
                             bg='#45b592',
@@ -381,7 +459,7 @@ class Acceuil(tk.Frame):
                             width=30
                             ), 500, 500)
 
-        button1 = bkrgframe.add(tk.Button(self, 
+        button4 = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher par VCN",
                             command = lambda : controller.show_frame(Rechercher_laptop_vcn),
                             bg='#45b592',
@@ -391,6 +469,17 @@ class Acceuil(tk.Frame):
                             height=2,
                             width=30
                             ), 500, 550)
+
+        button5 = bkrgframe.add(tk.Button(self, 
+                            text ="MAJ Valeurs",
+                            command = update_rows,
+                            bg='#FFCE5F',
+                            fg='#ffffff',
+                            bd=0,
+                            font=BUTTON_FONT,
+                            height=2,
+                            width=20
+                            ), 1025, 737)
 
 # second window frame Rechercher_laptop_nom_app
 class Rechercher_laptop_nom_app(tk.Frame):
@@ -735,7 +824,7 @@ class Rechercher_laptop_vcn(tk.Frame):
             Date_affectation 8, 
             Date_fin 9
             '''
-            cursor.execute("SELECT * FROM laptops where Utilisateur=?", (name,))
+            cursor.execute("SELECT * FROM laptops where prix_achat=?", (name,))
             row = cursor.fetchone()
 
             if row :
