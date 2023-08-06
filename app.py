@@ -199,9 +199,18 @@ class Ajouter(tk.Frame):
                     nom_appareil_field.focus_set()
 
                     # call the clear() function
-                    #clear()
+                    msg = "laptop " + nom_appareil_field.get() + " ajouté"
+                    messagebox.showinfo(title="Ajout d'un laptop", message= msg)
+                    clear()
                 else :
-                    Message.config(text = "Prix d'achat invalide")
+                    Message.config(text = "Valeur incorrect")
+                    if not check_number(prix_achat_field) : prix_achat_field.config(fg='red')
+                    if not validate(date_achat_field) : date_achat_field.config(fg='red')
+                    if not validate(date_exp_field) : date_exp_field.config(fg='red')
+                    if not validate(date_compta_field) : date_compta_field.config(fg='red')
+                    if not validate(date_affect_field) : date_affect_field.config(fg='red')
+                    if not validate(date_fin_field) : date_fin_field.config(fg='red')
+
 
         # Function to set focus (cursor)
         def focus1(event):
@@ -218,9 +227,10 @@ class Ajouter(tk.Frame):
 
             if validate(date_achat_field):
                 date_exp_field.focus_set()
+                date_achat_field.config(fg='black')
                 Message.config(text = "")
             else: 
-                Message.config(text = "Format date achat incorrecte")
+                Message.config(text = "Format date achat incorrecte dd-mm-yyyy")
                 date_achat_field.focus_set()
 
             
@@ -229,9 +239,10 @@ class Ajouter(tk.Frame):
         def focus4(event):
             if validate(date_exp_field):
                 prix_achat_field.focus_set()
+                date_exp_field.config(fg='black')
                 Message.config(text = "")
             else: 
-                Message.config(text = "Format date d'expiration incorrecte")
+                Message.config(text = "Format date d'expiration incorrecte dd-mm-yyyy")
                 date_exp_field.focus_set()
 
 
@@ -239,6 +250,7 @@ class Ajouter(tk.Frame):
         def focus5(event):
             if check_number(prix_achat_field):
                 date_compta_field.focus_set()
+                prix_achat_field.config(fg='black')
                 Message.config(text = "")
             else: 
                 Message.config(text = "Prix d'achat invalide")
@@ -249,9 +261,10 @@ class Ajouter(tk.Frame):
         def focus6(event):
             if validate(date_compta_field):
                 utilisateur_field.focus_set()
+                date_compta_field.config(fg='black')
                 Message.config(text = "")
             else: 
-                Message.config(text = "Format date d'comptabilisation incorrecte")
+                Message.config(text = "Format date d'comptabilisation incorrecte dd-mm-yyyy")
                 date_compta_field.focus_set()
 
 
@@ -263,19 +276,28 @@ class Ajouter(tk.Frame):
         def focus8(event):
             if validate(date_affect_field):
                 date_fin_field.focus_set()
+                date_affect_field.config(fg='black')
                 Message.config(text = "")
             else: 
-                Message.config(text = "Format date d'affectation incorrecte")
+                Message.config(text = "Format date d'affectation incorrecte dd-mm-yyyy")
                 date_affect_field.focus_set()
 
         # Function to set focus
         def focus9(event):
             if validate(date_fin_field):
-                insert()
+                date_fin_field.config(fg='black')
                 Message.config(text = "")
             else: 
-                Message.config(text = "Format date de fin incorrecte")
+                Message.config(text = "Format date de fin incorrecte dd-mm-yyyy")
                 date_fin_field.focus_set()
+
+        def entries_black():
+            prix_achat_field.config(fg='black')
+            date_achat_field.config(fg='black')
+            date_exp_field.config(fg='black')
+            date_compta_field.config(fg='black')
+            date_affect_field.config(fg='black')
+            date_fin_field.config(fg='black')
 
 
         tk.Frame.__init__(self, parent)
@@ -324,16 +346,16 @@ class Ajouter(tk.Frame):
 
         # create a text entry box
         # for typing the information
-        nom_appareil_field = bkrgframe.add(Entry(self, width= 40), 400, 240)
-        marque_field = bkrgframe.add(Entry(self, width= 40), 400, 260)
-        date_achat_field = bkrgframe.add(Entry(self, width= 40), 400, 280)
-        date_exp_field = bkrgframe.add(Entry(self, width= 40), 400, 300)
-        prix_achat_field = bkrgframe.add(Entry(self, width= 40), 400, 320)
-        date_compta_field = bkrgframe.add(Entry(self, width= 40), 400, 340)
+        nom_appareil_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 240)
+        marque_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 260)
+        date_achat_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 280)
+        date_exp_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 300)
+        prix_achat_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 320)
+        date_compta_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 340)
         #ammort_mensuel_field = bkrgframe.add(Entry(self, width= 40), 400, 360)
-        utilisateur_field = bkrgframe.add(Entry(self, width= 40), 400, 360)
-        date_affect_field = bkrgframe.add(Entry(self, width= 40), 400, 380)
-        date_fin_field = bkrgframe.add(Entry(self, width= 40), 400, 400)
+        utilisateur_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 360)
+        date_affect_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 380)
+        date_fin_field = bkrgframe.add(Entry(self, width= 40, fg='black'), 400, 400)
 
         
         # bind method of widget is used for
@@ -369,6 +391,8 @@ class Ajouter(tk.Frame):
 
         date_fin_field.bind("<Return>", focus9)
 
+        entries_black()
+
         submit = bkrgframe.add(tk.Button(self, 
                             text ="Ajouter",
                             command=insert,
@@ -383,7 +407,7 @@ class Ajouter(tk.Frame):
 
         button1 = bkrgframe.add(tk.Button(self, 
                             text ="Retour",
-                            command = lambda : [clear(), controller.show_frame(Acceuil)] ,
+                            command = lambda : [entries_black(), clear(), controller.show_frame(Acceuil)] ,
                             bg='#FFCE5F',
                             fg='#ffffff',
                             bd=0,
@@ -835,7 +859,9 @@ class Rechercher_laptop_vcn(tk.Frame):
                 canvas.create_text(x2, y, text=row[7])
                 canvas.create_text(x3, y, text=row[11])
                 y = y + 10
-                
+
+        def clear_canavas():
+             canvas_result.delete('all')   
 
         tk.Frame.__init__(self, parent)
 
@@ -850,9 +876,10 @@ class Rechercher_laptop_vcn(tk.Frame):
         canvas_result = bkrgframe.add(tk.Canvas(self, width=350, height=350,scrollregion=(0,0,500,500))
                             , 300, 200)
 
+        clear_canavas()
         Recherchebtn = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher",
-                            command = lambda : recherche(canvas_result),
+                            command = lambda : [clear_canavas(), recherche(canvas_result)],
                             bg='#45b592',
                             fg='#ffffff',
                             bd=0,
@@ -865,7 +892,7 @@ class Rechercher_laptop_vcn(tk.Frame):
 
         Retour = bkrgframe.add(tk.Button(self, 
                             text ="Retour",
-                            command = lambda : controller.show_frame(Acceuil),
+                            command = lambda : [clear_canavas(), controller.show_frame(Acceuil)],
                             bg='#FFCE5F',
                             fg='#ffffff',
                             bd=0,
