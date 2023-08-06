@@ -542,7 +542,7 @@ class Rechercher_laptop_nom_app(tk.Frame):
         bkrgframe = BkgrFrame(self, resource_path(IMAGE_PATH_OTHERS), WIDTH, HEIGTH)
         bkrgframe.pack()
 
-        Titre = bkrgframe.add(Label(self, text ="Rechercher un laptop par utilisateur", bg="#DEC6FA", font = MIDFONT)
+        Titre = bkrgframe.add(Label(self, text ="Rechercher un laptop par nom d'appareil", bg="#DEC6FA", font = MIDFONT)
                             , 300, 100)
         
         # recherche section
