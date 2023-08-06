@@ -518,8 +518,8 @@ class Rechercher_laptop_nom_app(tk.Frame):
                 change_text(utilisateur_field,row[7])
                 change_text(date_affect_field,row[8])
                 change_text(date_fin_field,row[9])
-                change_text(dot_ammort_mensuel_field, val_dot_ammort_mensuel)
-                change_text(vcn_field, float(row[4])-val_dot_ammort_mensuel)
+                change_text(dot_ammort_mensuel_field, row[10])
+                change_text(vcn_field, row[11])
 
             else :
                 clear_text(nom_appareil_field)
@@ -672,8 +672,8 @@ class Rechercher_laptop_user(tk.Frame):
                 change_text(utilisateur_field,row[7])
                 change_text(date_affect_field,row[8])
                 change_text(date_fin_field,row[9])
-                change_text(dot_ammort_mensuel_field, val_dot_ammort_mensuel)
-                change_text(vcn_field, float(row[4])-val_dot_ammort_mensuel)
+                change_text(dot_ammort_mensuel_field, row[10])
+                change_text(vcn_field, row[11])
 
             else :
                 clear_text(nom_appareil_field)
@@ -794,13 +794,6 @@ class Rechercher_laptop_user(tk.Frame):
 class Rechercher_laptop_vcn(tk.Frame):
      
     def __init__(self, parent, controller):
-        
-        def change_text(entry,txt):
-            entry.delete(0,END)
-            entry.insert(0,txt)
-
-        def clear_text(entry):
-            entry.delete(0,END)
 
         def diff_month(d1, d2):
             return (d1.year - d2.year) * 12 + d1.month - d2.month
@@ -809,53 +802,39 @@ class Rechercher_laptop_vcn(tk.Frame):
             val_ammort_mesnuel = float(ammort_mesnuel)
             nb_months = diff_month(datetime.now(), datetime.strptime(date_achat, "%d-%m-%Y"))
             return nb_months*val_ammort_mesnuel
-            
-        def recherche(name):
+
+        def update_rows():
             cursor = conn.cursor()
-            '''
-            Nom_appareil 0
-            Marque 1, 
-            Date_achat 2, 
-            date_exp 3, 
-            prix_achat 4, 
-            date_compta 5, 
-            Amortissement_mensuel 6, 
-            Utilisateur 7, 
-            Date_affectation 8, 
-            Date_fin 9
-            '''
-            cursor.execute("SELECT * FROM laptops where prix_achat=?", (name,))
-            row = cursor.fetchone()
-
-            if row :
+            cursor.execute("SELECT * FROM laptops")
+            rows = cursor.fetchall()
+            for row in rows :  
                 val_dot_ammort_mensuel = get_dot_ammort_mensuel(row[2], row[6])
-                change_text(nom_appareil_field,row[0])
-                change_text(marque_field,row[1])
-                change_text(date_achat_field,row[2])
-                change_text(date_exp_field,row[3])
-                change_text(prix_achat_field,row[4])
-                change_text(date_compta_field,row[5])
-                change_text(ammort_mensuel_field,row[6])
-                change_text(utilisateur_field,row[7])
-                change_text(date_affect_field,row[8])
-                change_text(date_fin_field,row[9])
-                change_text(dot_ammort_mensuel_field, val_dot_ammort_mensuel)
-                change_text(vcn_field, float(row[4])-val_dot_ammort_mensuel)
+                val_vcn = float(row[4])-val_dot_ammort_mensuel
+                cursor.execute("UPDATE laptops SET dot_ammortissement_mensuel=?, VCN=? WHERE Nom_appareil=? ", (val_dot_ammort_mensuel, val_vcn, row[0]))
+                conn.commit()
 
-            else :
-                clear_text(nom_appareil_field)
-                clear_text(marque_field)
-                clear_text(date_achat_field)
-                clear_text(date_exp_field)
-                clear_text(prix_achat_field)
-                clear_text(date_compta_field)
-                clear_text(ammort_mensuel_field)
-                clear_text(utilisateur_field)
-                clear_text(date_affect_field)
-                clear_text(date_fin_field)
-                clear_text(dot_ammort_mensuel_field)
-                clear_text(vcn_field)
+            
+        def recherche(canvas):
+            canvas.create_text(10, 10, text="Nom Appareil")
+            canvas.create_text(100, 10, text="utilisateur")
+            canvas.create_text(200, 10, text="VCN")
+            y= 30
+            x1= 20
+            x2= 100
+            x3= 200
+            update_rows()    
 
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM laptops where VCN>0")
+            rows = cursor.fetchall()
+
+            print(rows)
+
+            for row in rows : 
+                canvas.create_text(x1, y, text=row[0])
+                canvas.create_text(x2, y, text=row[7])
+                canvas.create_text(x3, y, text=row[11])
+                y = y + 10
                 
 
         tk.Frame.__init__(self, parent)
@@ -868,14 +847,12 @@ class Rechercher_laptop_vcn(tk.Frame):
         
         # recherche section
 
-        nom_appareil_recherche = bkrgframe.add(Label(self, text="Tapez le nom de l'utilisateur :", bg="#DEC6FA")
+        canvas_result = bkrgframe.add(tk.Canvas(self, width=350, height=350,scrollregion=(0,0,500,500))
                             , 300, 200)
-
-        nom_appareil_recherche_field = bkrgframe.add(Entry(self), 500, 200)
 
         Recherchebtn = bkrgframe.add(tk.Button(self, 
                             text ="Rechercher",
-                            command = lambda : recherche(nom_appareil_recherche_field.get()),
+                            command = lambda : recherche(canvas_result),
                             bg='#45b592',
                             fg='#ffffff',
                             bd=0,
@@ -883,66 +860,8 @@ class Rechercher_laptop_vcn(tk.Frame):
                             height=2,
                             width=15
                             )
-                            , 700, 190)
+                            , 700, 200)
 
-
-        # affichage section
-
-        nom_appareil = bkrgframe.add(Label(self, text="Nom de l'appareil", bg="#DEC6FA")
-                            , 300, 280)
-
-        marque = bkrgframe.add(Label(self, text="Marque", bg="#DEC6FA")
-                            , 300, 300)
-
-        date_achat = bkrgframe.add(Label(self, text="Date de l'achat", bg="#DEC6FA")
-                            , 300, 320)
-
-        date_exp = bkrgframe.add(Label(self, text="Date d'expiration", bg="#DEC6FA")
-                            , 300, 340)
-
-        prix_achat = bkrgframe.add(Label(self, text="Prix d'achat", bg="#DEC6FA")
-                            , 300, 360)
-
-        date_compta = bkrgframe.add(Label(self, text="Date comptabilisation", bg="#DEC6FA")
-                            , 300, 380)
-
-        ammort_mensuel = bkrgframe.add(Label(self, text="Ammortissement mensuel", bg="#DEC6FA")
-                            , 300, 400)
-
-        utilisateur = bkrgframe.add(Label(self, text="Utilisateur", bg="#DEC6FA")
-                            , 300, 420)
-
-        date_affect = bkrgframe.add(Label(self, text="Date affectation", bg="#DEC6FA")
-                            , 300, 440)
-        
-        date_fin = bkrgframe.add(Label(self, text="Date de fin", bg="#DEC6FA")
-                            , 300, 460)
-
-        dot_ammort_mensuel = bkrgframe.add(Label(self, text="Dotation aux amortissements", bg="#DEC6FA")
-                            , 300, 480)
-
-        vcn = bkrgframe.add(Label(self, text="Valeure compatable nette", bg="#DEC6FA")
-                            , 300, 500)
-
-        
-
-        # create a text entry box
-        # for typing the information
-        nom_appareil_field = bkrgframe.add(Entry(self), 450, 280)
-        marque_field = bkrgframe.add(Entry(self), 450, 300)
-        date_achat_field = bkrgframe.add(Entry(self), 450, 320)
-        date_exp_field = bkrgframe.add(Entry(self), 450, 340)
-        prix_achat_field = bkrgframe.add(Entry(self), 450, 360)
-        date_compta_field = bkrgframe.add(Entry(self), 450, 380)
-        ammort_mensuel_field = bkrgframe.add(Entry(self), 450, 400)
-        utilisateur_field = bkrgframe.add(Entry(self), 450, 420)
-        date_affect_field = bkrgframe.add(Entry(self), 450, 440)
-        date_fin_field = bkrgframe.add(Entry(self), 450, 460)
-        dot_ammort_mensuel_field = bkrgframe.add(Entry(self), 450, 480)
-        vcn_field = bkrgframe.add(Entry(self), 450, 500)
-
-
-        
 
         Retour = bkrgframe.add(tk.Button(self, 
                             text ="Retour",
