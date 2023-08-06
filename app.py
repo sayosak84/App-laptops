@@ -840,7 +840,7 @@ class Rechercher_laptop_vcn(tk.Frame):
             
         def recherche(canvas):
             canvas.create_text(10, 10, text="Nom Appareil")
-            canvas.create_text(100, 10, text="utilisateur")
+            canvas.create_text(100, 10, text="Utilisateur")
             canvas.create_text(200, 10, text="VCN")
             y= 30
             x1= 20
@@ -858,7 +858,7 @@ class Rechercher_laptop_vcn(tk.Frame):
                 canvas.create_text(x1, y, text=row[0])
                 canvas.create_text(x2, y, text=row[7])
                 canvas.create_text(x3, y, text=row[11])
-                y = y + 10
+                y = y + 15
 
         def clear_canavas():
              canvas_result.delete('all')   
